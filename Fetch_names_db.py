@@ -1,15 +1,31 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Nov  6 15:58:29 2019
+Created on Mon Nov 11 01:21:00 2019
 
-@author: aditi
+@author: ppk9364
 """
+
+import mysql.connector
 
 from SPARQLWrapper import SPARQLWrapper, JSON
 
 sparql = SPARQLWrapper("http://dbpedia.org/sparql")
-#x =""" "David_Schwimmer" """
-xs = [""" "David_Schwimmer" """,""" "Donald_Trump" """,""" "Narendra_Modi" """,""" "Stephen_Colbert" """]
+mydb = mysql.connector.connect(
+  host="localhost",
+  user="root",
+  passwd="root@123",
+  database="sakila"
+)
+
+mycursor = mydb.cursor()
+
+mycursor.execute("SELECT * FROM ALUMNA")
+
+myresult = mycursor.fetchall()
+xs =[]
+for x in myresult:
+  xs.append('""" "'+x[1].replace(" ","_")+'" """')
+print(xs) 
 for x in xs:
     print(x)
     sparql.setQuery("""
@@ -17,9 +33,8 @@ for x in xs:
 
     SELECT DISTINCT ?link ?person_full_name ?birth_place ?alma_mater
     WHERE { ?link a foaf:Person. ?link ?p ?person_full_name.
-           OPTIONAL{ FILTER(?p IN(dbo:birthName,dbp:birthName ,dbp:fullname,dbp:name)). }
            ?link rdfs:label ?person_name .
-           ?person_name bif:contains """+x+""".
+           ?person_name bif:contains """ +x+""".
            OPTIONAL { ?link dbo:birthPlace ?birth_place . }
            OPTIONAL { ?link dbo:almaMater ?alma_mater .}
            OPTIONAL { ?link dbp:almaMater ?alma_mater .}
@@ -29,7 +44,7 @@ for x in xs:
     results = sparql.query().convert()
 
     for result in results["results"]["bindings"]:
-        print(result["link"]["value"])
         print(result["birth_place"]["value"])
         print(result["alma_mater"]["value"])
         print("**********************************************")
+  

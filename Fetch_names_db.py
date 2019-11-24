@@ -18,7 +18,9 @@ mydb = mysql.connector.connect(
 )
 
 mycursor = mydb.cursor()
+mycursor.execute("DROP TABLE IF EXISTS Tags ")
 
+mycursor.execute("CREATE TABLE Tags (LINK VARCHAR(255),NAME VARCHAR(25))")
 mycursor.execute("SELECT * FROM ALUMNA")
 
 myresult = mycursor.fetchall()
@@ -42,9 +44,22 @@ for x in xs:
     """)
     sparql.setReturnFormat(JSON)
     results = sparql.query().convert()
-
+    i=0
     for result in results["results"]["bindings"]:
-        print(result["birth_place"]["value"])
-        print(result["alma_mater"]["value"])
-        print("**********************************************")
+            #print(results["results"]["birth_place"])    
+            aset = set()
+            try:
+                print(result["birth_place"]["value"])
+                print(result["alma_mater"]["value"])
+
+            except:
+                break
+            
+            print("**********************************************")
+            i+=1
+
+
+
+
+    
   

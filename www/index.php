@@ -1,5 +1,5 @@
 <?php
-	$conn = mysqli_connect('localhost','root','root@123','sakila');
+	$conn = mysqli_connect('localhost','aditi','root123','local_angle');
 	if($conn->connect_error){
 		echo 'Connection error' . mysqli_connect_error();
 	}
@@ -35,6 +35,26 @@
     <link rel="stylesheet" href="css/icomoon.css">
     <link rel="stylesheet" href="css/style.css">
   </head>
+  <style> 
+	#b1, #b2 {
+	background-color: #4CAF50;
+	border: none;
+	color: white;
+	padding: 16px 32px;
+	text-decoration: none;
+	margin: 4px 2px;
+	cursor: pointer;
+	}
+
+	#card1{
+		position:absolute;
+		left: 300px; 
+	}
+	#card2{
+		
+		left: 650px; 
+	}
+</style>
   <body>
     
 	  <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
@@ -80,15 +100,15 @@
           </div>
         </div>
         <div class="row">
-				<div class="col-lg-3 col-sm-6">
+				<div id="card1" class="col-lg-3 col-sm-6">
 						<div class="block-2 ftco-animate">
 						<div class="flipper">
-						  <div class="front" style="background-color: green;">
+						  <div class="front" style="background-image: url('images/chicago.jpg');">
 							<div class="box">
 							  <h2>Your city?</h2>
 							</div>
 						  </div>
-						  <div class="back" align="center">
+						  <div class="back" align="center" style="background-image: url('images/chicago3.jpg');">
 							<!-- back content -->
 							<form method = "POST">
 							<br/>
@@ -103,9 +123,9 @@
 							  <br/>
 							 
 							  
-							  <a href="#piyush">
-							  <input type="submit" name="search1" value="Search"/>
-							  </a>
+							  <form action="localhost/index.php#piyush">
+							  <input id="b1" type="submit" name="search1" value="Search" />
+							  </form>
 							
 								
 							   
@@ -135,15 +155,15 @@
 					  </div>
 					</div>
     
-        	<div class="col-lg-3 col-sm-6">
+        	<div id="card2" class="col-lg-3 col-sm-6">
         		<div class="block-2 ftco-animate">
 	            <div class="flipper">
-	              <div class="front" style="background-color: green;">
+	              <div class="front" style="background-image: url('images/weber_arch4.jpg');">
 	                <div class="box">
 	                  <h2>Your school?</h2>
 	                </div>
 	              </div>
-	              <div class="back" align="center">
+	              <div class="back" align="center" style="background-image: url('images/weber_arch6.jpg');">
 	                <!-- back content -->
 						<form method = "POST">
 							<br/>
@@ -156,12 +176,11 @@
 							  <br/>
 							  <br/>
 							  
-							  <a href="index.php/#piyush">
-							  <input type="submit" name="search2" value="Search"; />
-							  </div>
-							  
-							   </a>
+							  <form action="localhost/index.php#piyush">
+							  <input id="b2" type="submit" name="search2" value="Search" />
 							</form>
+							</form>
+							</div>
 						<?php
 								
 								if(isset($_POST['search2']))
@@ -193,14 +212,23 @@
         <div class="row justify-content-center mb-5 pb-3">
           <div class="col-md-7 heading-section text-center ftco-animate">
           	<span class="subheading">News</span>
-            <h2>This might be of interest to you! <?php echo "You have selected:" .$selected_val; ?></h2>
+			<h2>
+			<?php
+				if(isset($selected_val)){
+					echo "This might be of interest to you!\n";
+					echo "You have selected:" .$selected_val;
+				}
+				else{
+					echo "Please select a city or a school.";
+				} ?>
+			</h2>
           </div>
         </div>
         <div class="row d-flex">
          
 		  <?php 
-				
-				if ($stmt = $conn->prepare($query)) {
+		  	if(isset($selected_val)){
+					if ($stmt = $conn->prepare($query)) {
 								$stmt->execute();
 								$stmt->bind_result($link,$title,$published_time);
 								while ($stmt->fetch()) {
@@ -223,7 +251,8 @@
 		  <?php
 		 }
 		 $stmt->close();
-		} ?>
+		}}
+		?>
           
     </section>
 	</p>

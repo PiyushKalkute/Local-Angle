@@ -32,27 +32,27 @@ def get_articles_list():
 
 mydb = mysql.connector.connect(
   host="localhost",
-  user="root",
-  password="root@123",
-  database="sakila"
+  user="aditi",
+  password="root123",
+  database="local_angle"
  )
 mycursor = mydb.cursor()
 url_list = get_articles_list()
 #mycursor.execute("DROP TABLE IF EXISTS Links ")
 
-#mycursor.execute("CREATE TABLE LINKS (LINK VARCHAR(1023), TITLE VARCHAR(1023), PUBLISHED_TIME VARCHAR(100))")
-sql = "INSERT INTO LINKS (LINK, TITLE,PUBLISHED_TIME) VALUES (%s, %s, %s)"
+#mycursor.execute("CREATE TABLE LINKS (LINK VARCHAR(1023), TITLE VARCHAR(1023), PUBLISHED_TIME VARCHAR(100), IMAGE VARCHAR(1023))")
+sql = "INSERT INTO LINKS (LINK, TITLE,PUBLISHED_TIME, IMAGE) VALUES (%s, %s, %s, %s)"
 
 for ur in url_list :
     try:
         article = NewsPlease.from_url(ur)
         url_req = requests.get(ur)
-        
+        print("########################################")
         print(url_req.url)
         print(article.date_publish)
-        val = (url_req.url , article.title ,article.date_publish)
+        print(article.image_url)
+        val = (url_req.url , article.title ,article.date_publish, article.image_url)
         mycursor.execute(sql, val)
         mydb.commit()
-        print("########################################")
     except:
        print("Article error")

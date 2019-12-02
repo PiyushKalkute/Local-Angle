@@ -51,7 +51,7 @@
 		left: 300px; 
 	}
 	#card2{
-		
+	
 		left: 650px; 
 	}
 </style>
@@ -113,43 +113,23 @@
 							<form method = "POST">
 							<br/>
 							<br/>
-							  <select id="city" name="city">
-								<option value="New York">New York</option>
-								<option value="Chicago">Chicago</option>
-								<option value="California">California</option>
-								<option value="United States">United States</option>
-							  </select>
+								<input type="text" placeholder="Search city.." id="city" name="city" size=12>
 							  <br/>
 							  <br/>
 							 
 							  
 							  <form action="localhost/index.php#piyush">
 							  <input id="b1" type="submit" name="search1" value="Search" />
-							  </form>
-							
-								
-							   
-							</form>
 							
 							<?php
-								//$array = array(1 => "New York", 2 => "London" , 3 => "United States");
 								if(isset($_POST['search1']))
 								{
 									$selected_val = $_POST['city'];
-									//printf("%s\n", $selected_val);
+									$query = "SELECT DISTINCT * from links where LINK IN  (Select link from alumna where NAME IN( SELECT Name FROM geo_tags where BIRTHPLACE = \"$selected_val\" OR  BIRTHPLACE like \"%$selected_val%\") AND NAME NOT IN (SELECT NAME FROM alumna GROUP BY name HAVING COUNT(*) > 5))";
 									
-									$query = "SELECT DISTINCT * from links where LINK IN  (Select link from alumna where NAME IN( SELECT Name FROM geo_tags where BIRTHPLACE = \"$selected_val\" OR  BIRTHPLACE like \"%$selected_val%\"))";
-									//echo $selected_val;
-									//$maker = mysql_real_escape_string($_POST['city']);
-									//printf("%s\n", $array[$maker]);
 								}
-								//echo "You have selected:" .$array[$selected_val];
-								
 							?>
-							
-
 							<br/>
-							<!--<p align="center"><a href="#" class="btn btn-primary py-3 px-4">Search →</a></p>-->
 						  </div>
 						</div>
 					  </div>
@@ -168,11 +148,7 @@
 						<form method = "POST">
 							<br/>
 							<br/>
-					          <select id="school" name="school">
-								<option value="Northwestern University">Northwestern University</option>
-								<option value="University of Pennsylvania">University of Pennsylvania</option>
-								<option value="Yale University">Yale University</option>
-							  </select>
+							<input type="text" placeholder="Search school.." id="school" name="school" size=12>
 							  <br/>
 							  <br/>
 							  
@@ -186,17 +162,11 @@
 								if(isset($_POST['search2']))
 								{
 									$selected_val = $_POST['school'];
-									//printf("%s\n", $selected_val);
-									$query = "SELECT DISTINCT * from links where LINK IN  (Select link from alumna where NAME IN( SELECT Name FROM alum_tags where UNIVERSITY = \"$selected_val\" OR  UNIVERSITY like \"%$selected_val%\"))";
-									//echo $selected_val;
-									//$maker = mysql_real_escape_string($_POST['city']);
-									//printf("%s\n", $array[$maker]);
-								}
-								//echo "You have selected:" .$array[$selected_val];
-								
+									$query = "SELECT DISTINCT * from links where LINK IN  (Select link from alumna where NAME IN( SELECT Name FROM alum_tags where UNIVERSITY = \"$selected_val\" OR  UNIVERSITY like \"%$selected_val%\") AND NAME NOT IN (SELECT NAME FROM alumna GROUP BY name HAVING COUNT(*) > 5))";
+								}	
 						?>
 					<br/>
-					<!--<p align="center"><a href="#" class="btn btn-primary py-3 px-4">Search →</a></p>-->
+			
 				  </div>
 	            </div>
 	          </div>
@@ -216,7 +186,7 @@
 			<?php
 				if(isset($selected_val)){
 					echo "This might be of interest to you!\n";
-					echo "You have selected:" .$selected_val;
+					echo "You have selected: " .$selected_val;
 				}
 				else{
 					echo "Please select a city or a school.";
@@ -227,24 +197,27 @@
         <div class="row d-flex">
          
 		  <?php 
-		  	if(isset($selected_val)){
+		    
+		  	if(isset($selected_val )){
 					if ($stmt = $conn->prepare($query)) {
 								$stmt->execute();
-								$stmt->bind_result($link,$title,$published_time);
+								$stmt->bind_result($link,$title,$published_time,$image);
 								while ($stmt->fetch()) {
 												?>
 									
           <div class="col-md-4 d-flex ftco-animate">
           	<div class="blog-entry justify-content-end">
-              <a href="blog-single.html" class="block-20" style="background-image: url('images/image_2.jpg');">
+              <a href="blog-single.html" class="block-20" style="background-image: url(<?php printf("%s\n", $image)?>);">
               </a>
               <div class="text p-4 float-right d-block">
               	<div class="topper d-flex align-items-center">
               		<div class="two pl-0 pr-3 py-2 align-self-stretch" align="right">
               			<span class="mos"><?php printf("%s\n", $published_time); ?></span>
               		</div>
-              	</div>
-                <h3 class="heading mt-2"><a href="<?php printf("%s\n", $link)?>"><?php printf("%s\n", $title); ?></a></h3>
+				  </div>
+				<h3 class="heading mt-2"><a href="<?php 
+				printf("%s\n", $link)?>"><?php printf("%s\n", $title); ?></a></h3>
+				
               </div>
             </div>
           </div>
